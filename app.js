@@ -60,6 +60,7 @@ function createWebSocketServer(server, onConnection, onMessage, onClose, onError
     });
     wss.broadcast = function broadcast(data) {
         console.log(`broadcast ${data}`)
+        console.log(wss.clients.length)
         wss.clients.forEach(function each(client) {
             client.send(data);
         });
@@ -112,6 +113,7 @@ function createMessage(type, user, data) {
 }
 
 function onConnect() {
+    console.log('ws onconnect')
     let user = this.user;
     let msg = createMessage('join', user, `${user.name} joined.`);
     this.wss.broadcast(msg);
@@ -123,7 +125,7 @@ function onConnect() {
 }
 
 function onMessage(message) {
-    console.log(message);
+    console.log('ws onmessage : ' + message);
     if (message && message.trim()) {
         let msg = createMessage('chat', this.user, message.trim());
         this.wss.broadcast(msg);
@@ -131,6 +133,7 @@ function onMessage(message) {
 }
 
 function onClose() {
+    console.log('ws onclose ')
     let user = this.user;
     let msg = createMessage('left', user, `${user.name} is left.`);
     this.wss.broadcast(msg);
