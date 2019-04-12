@@ -15,6 +15,8 @@ const templating = require('./templating')
 
 const rest = require('./rest')
 
+const Cookies = require('cookies');
+
 const WebSocketServer = ws.Server;
 
 // log request URL:
@@ -23,10 +25,10 @@ app.use(async (ctx, next) => {
     await next();
 });
 
-// app.use(async (ctx,next) => {
-//     ctx.state.user = parseUser(ctx)
-//     await next()
-// })
+app.use(async (ctx,next) => {
+    ctx.state.user = parseUser(ctx)
+    await next()
+})
 
 // static file support:
 let staticFiles = require('./static-files');
@@ -47,7 +49,33 @@ app.use(controller())
 
 let server = app.listen(3001)
 
-function parseUser(ctx) {
+function parseUser(obj) {
+    // if (!obj) {
+    //     return;
+    // }
+    // console.log('try parse: ' + obj);
+    // let s = '';
+    // if (typeof obj === 'string') {
+    //     s = obj;
+    // } else if (obj.headers) {
+    //     let cookies = new Cookies(obj, null);
+    //     s = cookies.get('name');
+    // }
+    // if (s) {
+    //     try {
+    //         let user = JSON.parse(Buffer.from(s, 'base64').toString());
+    //         console.log(`User: ${user.name}, ID: ${user.id}`);
+    //         return user;
+    //     } catch (e) {
+    //         // ignore
+    //         console.log(`user error`)
+    //         return {
+    //             id : 1000,
+    //             name : 'heheda'
+    //         }
+    //     }
+    // }
+
     return {
         id : 1000,
         name : 'heheda'
@@ -60,7 +88,6 @@ function createWebSocketServer(server, onConnection, onMessage, onClose, onError
     });
     wss.broadcast = function broadcast(data) {
         console.log(`broadcast ${data}`)
-        console.log(wss.clients.length)
         wss.clients.forEach(function each(client) {
             client.send(data);
         });
@@ -92,6 +119,7 @@ function createWebSocketServer(server, onConnection, onMessage, onClose, onError
         if (!user) {
             ws.close(4001, 'Invalid user');
         }
+        console.log('connection user :' + user)
         ws.user = user;
         ws.wss = wss;
         onConnection.apply(ws);
@@ -135,6 +163,7 @@ function onMessage(message) {
 function onClose() {
     console.log('ws onclose ')
     let user = this.user;
+    console(`user : ${user}`)
     let msg = createMessage('left', user, `${user.name} is left.`);
     this.wss.broadcast(msg);
 }

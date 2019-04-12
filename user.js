@@ -11,7 +11,7 @@
 
  class User {
     constructor(account,password){
-       this.account = account
+       this.name = account
        this.password = password
        this.id = nextId()
     }
@@ -29,6 +29,7 @@
         return users
      },
      signIn : (account,password) => {
+        console.log(`signIn account : ${account} password : ${password}`)
         let user = new User(account,password)
         users.push(user)
         return user

@@ -26,7 +26,11 @@ module.exports = {
         }
     },
     'POST /api/signIn': async(ctx,next) => {
+        console.log(`api signIn account : ${ctx.request.body.account} pasword : ${ctx.request.body.password}`)
         let user = users.signIn(ctx.request.body.account,ctx.request.body.password)
+        let value = Buffer.from(JSON.stringify(user)).toString('base64');
+        console.log(`Set cookie value: ${value}`);
+        ctx.cookies.set('name', value);
         ctx.rest(user)
     },
     'POST /api/loginOut' : async(ctx,next) => {
