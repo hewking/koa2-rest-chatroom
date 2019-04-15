@@ -50,35 +50,35 @@ app.use(controller())
 let server = app.listen(3001)
 
 function parseUser(obj) {
-    // if (!obj) {
-    //     return;
-    // }
-    // console.log('try parse: ' + obj);
-    // let s = '';
-    // if (typeof obj === 'string') {
-    //     s = obj;
-    // } else if (obj.headers) {
-    //     let cookies = new Cookies(obj, null);
-    //     s = cookies.get('name');
-    // }
-    // if (s) {
-    //     try {
-    //         let user = JSON.parse(Buffer.from(s, 'base64').toString());
-    //         console.log(`User: ${user.name}, ID: ${user.id}`);
-    //         return user;
-    //     } catch (e) {
-    //         // ignore
-    //         console.log(`user error`)
-    //         return {
-    //             id : 1000,
-    //             name : 'heheda'
-    //         }
-    //     }
-    // }
-
-    return {
-        id : 1000,
-        name : 'heheda'
+    if (!obj) {
+        return;
+    }
+    console.log('try parse: ' + obj);
+    let s = '';
+    if (typeof obj === 'string') {
+        s = obj;
+    } else if (obj.headers) {
+        let cookies = new Cookies(obj, null);
+        s = cookies.get('name');
+    }
+    if (s) {
+        try {
+            let user = JSON.parse(Buffer.from(s, 'base64').toString());
+            console.log(`User: ${user.name}, ID: ${user.id}`);
+            return user;
+        } catch (e) {
+            // ignore
+            console.log(`user error`)
+            return {
+                id : 1000,
+                name : 'heheda'
+            }
+        }
+    } else {
+        return {
+            id : 1000,
+            name : 'heheda'
+        }
     }
 }
 
